@@ -16,7 +16,7 @@ const BAK_DEFAULTS = {
   cleanBing: true,
   cleanSogou: true,
   clean360: true,
-  removeHotlist: false,          // 顺带清理百度右侧热搜等侧边模块（默认关，避免误杀）
+  removeHotlist: true,           // 隐藏百度热搜板块（首页榜单 + 结果页右侧栏）
   subscriptions: {               // 预设订阅开关，详见 BAK_PRESETS
     easylistcn: true,
     antidomains: true,

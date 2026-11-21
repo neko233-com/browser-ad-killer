@@ -13,7 +13,7 @@
     const host = location.hostname;
     const path = location.pathname;
     if (/google\.(com|com\.hk|co\.jp)$/.test(host) && path.startsWith('/search')) return 'google';
-    if (/baidu\.com$/.test(host) && /^\/s($|\?)/.test(path)) return 'baidu';
+    if (/baidu\.com$/.test(host)) return 'baidu';
     if (/bing\.com$/.test(host)) return 'bing';
     if (/sogou\.com$/.test(host) && /^\/web/.test(path)) return 'sogou';
     if (/so\.com$/.test(host)) return 'so360';
@@ -82,8 +82,24 @@
         const badge = Array.from(card.querySelectorAll('span, div, a, b, em, i')).some(labelHit);
         if (badge) hide(card);
       });
-      // 右侧热搜（默认关，避免误杀）
-      if (cfg.removeHotlist) hide(document.querySelector('#content_right'));
+      // 热搜板块：首页榜单 + 结果页右侧栏（默认开，显式关闭才停用）
+      if (cfg.removeHotlist !== false) {
+        [
+          '#s-hotsearch-wrapper', '.s-hotsearch-wrapper', '#hotsearch',
+          '[tpl*="hotsearch"]', '[class*="hotsearch-list"]', '.hotsearch-content-wrapper'
+        ].forEach((sel) => document.querySelectorAll(sel).forEach(hide));
+        // 文本兜底：标题为“百度热搜”的板块，上溯到含多个链接的容器隐藏
+        document.querySelectorAll('span, b, div, a, h2, h3').forEach((el) => {
+          const t = (el.textContent || '').trim();
+          if (t !== '百度热搜' && t !== '百度热搜 >') return;
+          let node = el;
+          for (let i = 0; i < 6 && node.parentElement; i++) {
+            node = node.parentElement;
+            const links = node.querySelectorAll('a[href]');
+            if (links.length >= 3) { hide(node); break; }
+          }
+        });
+      }
     },
 
     bing() {
