@@ -8,10 +8,13 @@ Zero build, zero dependency, vanilla JS — load the folder and go.
 
 ## Features
 
-- **Network-layer blocking**: bundled high-confidence ad/tracker domains as a static DNR ruleset; subscriptions (EasyList China / anti-AD / EasyPrivacy / CJX) and custom rules compile into dynamic DNR blocks; per-site whitelist pausing.
-- **Search-page cleanup**: hides paid sponsored results on **Google / Baidu / Bing / Sogou / 360 (so.com)** without touching organic results.
+- **Network-layer blocking**: bundled high-confidence ad/tracker domains as a static DNR ruleset; with AdGuard Base / AdGuard Chinese / EasyList China / anti-AD enabled you get roughly **127k unique blocked domains**; custom rules and per-site whitelist pausing included.
+- **Cosmetic filtering**: parses subscription `##` hiding rules into per-domain shards persisted in storage, injects CSS at page load — about **68k selectors across 32k sites**, effective before any request finishes.
+- **Search-page cleanup**: hides paid sponsored results on **Google / Baidu / Bing / Sogou / 360 (so.com)** without touching organic results; Baidu home + right-hand “hot search” panel is cleaned by default.
+- **No collateral damage**: path rules such as `||baidu.com/adver?` are never degraded into whole-site blocks, and major portals plus their CDNs are on a protection list.
+- **Auto-update**: subscriptions refresh every 12h inside the browser; version check every 6h; a scheduled task can update the extension body unattended.
 - **Cross-browser sync**: export a JSON config in one browser, import it in another — toggles, subscriptions, custom rules and whitelist move together.
-- **Lightweight**: MV3 Declarative Net Request blocks requests without waking the service worker; content scripts only run on search pages.
+- **Lightweight**: MV3 Declarative Net Request blocks requests without waking the service worker; cosmetic CSS is sharded so pages stay responsive.
 
 ## Quick start
 
@@ -57,7 +60,17 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 - **In-extension check**: the background checks the GitHub remote version every 6 h through a mirror chain; the popup shows a notice only when a newer version exists (no noise when up-to-date).
 - **CLI update**: `update.ps1` (Windows) / `update.sh` (Unix) fetch the repo through the chain `GitHub direct → jsDelivr → ghproxy → ghfast`; they refresh the install dir only when the remote version is higher; up-to-date = no-op; if every mirror fails it just warns without touching the current install.
-- **Subscription refresh**: filter lists auto-update every 12 h; presets also carry mirror fallback.
+- **Unattended (Windows)**: register a scheduled task once and it runs `update.ps1 -Quiet` daily; the next browser launch picks up the new files automatically (an unpacked extension re-reads its install dir on every start).
+
+```powershell
+# register a daily 12:00 silent update task (idempotent, reruns overwrite the same task)
+.\install.ps1 -ScheduleUpdate
+# inspect / remove
+schtasks /query /tn "Browser Ad Killer Update"
+schtasks /delete /tn "Browser Ad Killer Update" /f
+```
+
+- **Subscription refresh**: filter lists auto-update every 12 h; presets also carry mirror fallback. While fetching, the worker keeps itself alive with periodic API calls so MV3 does not kill it mid-download.
 - **Idempotent**: `install` / `update` are safe to rerun — no errors, no duplicate popups, no temp leftovers.
 
 ## Usage
@@ -66,7 +79,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 | --- | --- |
 | Toolbar popup | Master switch, pause current site, network/search toggles, matched-rule count, export config |
 | Options → Master | Global on/off, network DNR, search cleanup |
-| Options → Per-engine | Toggle Google / Baidu / Bing / Sogou / 360 individually; Baidu right-side hot-list cleanup (off by default) |
+| Options → Per-engine | Toggle Google / Baidu / Bing / Sogou / 360 individually; Baidu home + right-side hot-list cleanup (on by default) |
 | Options → Subscriptions | Check presets, "Update all now"; auto-refresh every 12 h |
 | Options → Custom rules | One per line: `||ads.example.com^` or `0.0.0.0 tracker.com`; `@@||x.com^` = allow exception |
 | Options → Whitelist | Pause blocking for a single site |
@@ -82,12 +95,14 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 | Preset | Scope | Sources (mirror fallback automatic) |
 | --- | --- | --- |
-| EasyList China | Chinese ads | easylist-downloads.adblockplus.org / jsDelivr |
-| anti-AD domain list | Highest-hit Chinese domains | anti-ad.net / jsDelivr / GitHub |
+| AdGuard Base | Global base list incl. element hiding (on) | filters.adtidy.org / ghproxy / GitHub raw |
+| AdGuard Chinese | Chinese ads incl. element hiding (on) | filters.adtidy.org / ghproxy / GitHub raw |
+| EasyList China | Chinese ads (on) | easylist-downloads.adblockplus.org / jsDelivr |
+| anti-AD domain list | Highest-hit Chinese domains (on) | anti-ad.net / jsDelivr / GitHub |
 | EasyPrivacy | Tracking/privacy (off) | easylist-downloads.adblockplus.org |
 | CJX's Annoyance | Self-promotion/annoyances (off) | GitHub / jsDelivr |
 
-> v1 parses network-layer domain rules only; element-hiding (`##`), regex and `$`-modifier rules are skipped — see Roadmap.
+> Parsed: `||domain^` domain rules (path/regex/`$` rules are dropped rather than widened into whole-site blocks), plain domain lists, and `##` / `#@#` element-hiding selectors. `$`-modifier, `#?#` extended and scriptlet rules are skipped.
 
 ## Development
 
@@ -101,7 +116,7 @@ node tools\pack.mjs         # pack dist\browser-ad-killer-vX.Y.Z.zip
 
 ## Roadmap
 
-- [ ] Cosmetic layer: parse `##` element-hiding rules, inject CSS from content scripts (uBlock-style element hiding)
+- [x] Cosmetic layer: parse `##` element-hiding rules, inject CSS from content scripts (uBlock-style element hiding)
 - [ ] Bundled selector library for common site banners/popups/self-promotion
 - [ ] Incremental subscription updates with cached version display
 - [ ] Custom element-picker: click on page to generate a rule
@@ -116,6 +131,23 @@ node tools\pack.mjs         # pack dist\browser-ad-killer-vX.Y.Z.zip
 - [AdGuard tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) — filter engine reference
 - [anti-AD](https://github.com/privacy-protection-tools/anti-AD) — Chinese domain list
 - [EasyList China](https://github.com/easylistchina/easylistchina) — Chinese filter list
+
+## Compared to AdGuard
+
+| Capability | Here | Notes |
+| --- | --- | --- |
+| Web ad/tracker blocking | ✅ | Dynamic DNR, ~127k unique domains after dedupe |
+| Element hiding (banners, ad slots, hot lists) | ✅ | Subscription `##` rules, ~68k selectors across 32k sites |
+| Search-page sponsor cleanup | ✅ | Five engines + Baidu hot list; AdGuard needs extra rules |
+| Malware/phishing protection | ⚠️ Partial | No dedicated phishing feed; subscribe to a malicious-domain list if needed |
+| System-wide DNS filtering | ❌ | Extensions cannot own system DNS; set your OS/router DNS to AdGuard DNS instead |
+| HTTPS content filtering (MITM) | ❌ | Disallowed by MV3 for any extension |
+| Anti-adblock countermeasures | ⚠️ Limited | Network and cosmetic layers work; script-injection countermeasures are restricted |
+| Parental control / Stealth mode | ❌ | Desktop-app-only features |
+| Non-browser traffic (app splash ads) | ❌ | Needs AdGuard desktop or a system-level solution |
+| Auto-update of rules | ✅ | Subscriptions every 12 h + scheduled task for the extension body |
+
+> Bottom line: for **in-browser browsing this fully replaces AdGuard Pro**, including element hiding which is AdGuard's core engine. System-level DNS and cross-app blocking still need AdGuard DNS or the desktop app.
 
 ## Limitations
 

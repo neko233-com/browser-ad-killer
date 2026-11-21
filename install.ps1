@@ -14,10 +14,13 @@
   强制打开检测到浏览器的扩展管理页（默认仅首次安装打开）。
 .PARAMETER Quiet
   不打印收尾提示。
+.PARAMETER ScheduleUpdate
+  注册 Windows 计划任务，每天静默执行 update.ps1（幂等：重复执行覆盖同名任务）。
 .EXAMPLE
   .\install.ps1
   .\install.ps1 -Browser Edge -Launch
   .\install.ps1 -Browser None
+  .\install.ps1 -ScheduleUpdate
 #>
 [CmdletBinding()]
 param(
@@ -26,7 +29,8 @@ param(
   [string]$InstallDir = '',
   [switch]$Launch,
   [switch]$OpenPages,
-  [switch]$Quiet
+  [switch]$Quiet,
+  [switch]$ScheduleUpdate
 )
 
 $ErrorActionPreference = 'Stop'
@@ -74,6 +78,32 @@ foreach ($rel in $copyItems) {
   Copy-Item -LiteralPath $from -Destination $to -Recurse -Force
 }
 if (-not $Quiet) { Write-Host "[BAK] 文件已复制到: $InstallDir" -ForegroundColor Green }
+
+# ---------- 自动更新（Windows 计划任务） ----------
+if ($ScheduleUpdate) {
+  $toolDir = [System.IO.Path]::GetDirectoryName($InstallDir)
+  New-Item -ItemType Directory -Force -Path $toolDir | Out-Null
+  # 任务跑安装目录旁的副本，项目目录被移动/删除也不影响
+  $updater = Join-Path $toolDir 'update.ps1'
+  Copy-Item -LiteralPath (Join-Path $root 'update.ps1') -Destination $updater -Force
+
+  $shell = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+  if (-not $shell) { $shell = (Get-Command powershell.exe -ErrorAction SilentlyContinue).Source }
+  if (-not $shell) { $shell = 'powershell.exe' }
+
+  $taskName = 'Browser Ad Killer Update'
+  $taskCmd = '"{0}" -NoProfile -ExecutionPolicy Bypass -File "{1}" -Quiet' -f $shell, $updater
+  & schtasks.exe /create /tn $taskName /tr $taskCmd /sc daily /st 12:00 /f 2>&1 | Out-String | Write-Verbose
+  if ($LASTEXITCODE -eq 0) {
+    if (-not $Quiet) {
+      Write-Host "[BAK] 已注册每日自动更新任务「$taskName」（12:00，静默）" -ForegroundColor Green
+      Write-Host "      查看: schtasks /query /tn `"$taskName`""
+      Write-Host "      删除: schtasks /delete /tn `"$taskName`" /f"
+    }
+  } else {
+    Write-Host "[BAK] 计划任务注册失败（可手动以当前用户身份重跑 -ScheduleUpdate）" -ForegroundColor DarkYellow
+  }
+}
 
 # ---------- 浏览器探测 ----------
 function Find-BrowserExe {

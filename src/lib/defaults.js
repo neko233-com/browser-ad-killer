@@ -2,7 +2,7 @@
  * 被 background(service-worker, importScripts) / popup / options 直接引用，请勿使用 ES module 语法。
  */
 
-const BAK_VERSION = '0.1.1';
+const BAK_VERSION = '0.2.0';
 const BAK_STORAGE_KEY = 'bak_settings_v1';
 
 // 默认设置：导出/导入、站点开关都围绕这份结构
@@ -19,6 +19,8 @@ const BAK_DEFAULTS = {
   removeHotlist: true,           // 隐藏百度热搜板块（首页榜单 + 结果页右侧栏）
   cosmetic: true,               // 通用页面广告槽位/广告域名媒体隐藏（网络层之外的兜底）
   subscriptions: {               // 预设订阅开关，详见 BAK_PRESETS
+    adguardbase: true,
+    adguardcn: true,
     easylistcn: true,
     antidomains: true,
     easyprivacy: false,
@@ -35,6 +37,28 @@ const BAK_DEFAULTS = {
 // 每个源给一组镜像，浏览器内逐个尝试，全部失败则提示手动粘贴。
 const BAK_PRESETS = [
   {
+    id: 'adguardbase',
+    name: 'AdGuard Base（英文基础规则，含元素隐藏）',
+    parser: 'easylist',
+    homepage: 'https://github.com/AdguardTeam/AdguardFilters',
+    urls: [
+      'https://filters.adtidy.org/extension/ublock/filters/2.txt',
+      'https://ghproxy.net/https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/BaseFilter/sections/adservers.txt',
+      'https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/BaseFilter/sections/adservers.txt'
+    ]
+  },
+  {
+    id: 'adguardcn',
+    name: 'AdGuard Chinese（中文区规则，含元素隐藏）',
+    parser: 'easylist',
+    homepage: 'https://github.com/AdguardTeam/AdguardFilters',
+    urls: [
+      'https://filters.adtidy.org/extension/ublock/filters/224.txt',
+      'https://ghproxy.net/https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/ChineseFilter/sections/adservers.txt',
+      'https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/ChineseFilter/sections/adservers.txt'
+    ]
+  },
+  {
     id: 'easylistcn',
     name: 'EasyList China（中文广告）',
     parser: 'easylist',
@@ -49,7 +73,7 @@ const BAK_PRESETS = [
   {
     id: 'antidomains',
     name: 'anti-AD 域名列表（中文区命中率最高）',
-    parser: 'hosts',
+    parser: 'plain',
     homepage: 'https://anti-ad.net/',
     urls: [
       'https://anti-ad.net/domains.txt',
@@ -93,3 +117,14 @@ const BAK_AD_LABELS = [
 const BAK_MAX_DYNAMIC_RULES = 25000;
 // 每条 DNR 规则合并的域名数（requestDomains 批量，减少规则条数）
 const BAK_DOMAINS_PER_RULE = 100;
+
+// 订阅解析结果的持久化 key（避免 service worker 休眠后丢失规则）
+const BAK_NETSET_KEY = 'bak_netset_v1';
+const BAK_COSMETIC_META_KEY = 'bak_cosmetic_meta_v1';
+const BAK_COSMETIC_GLOBAL_KEY = 'bak_cosmetic_global_v1';
+const BAK_COSMETIC_EXCLUDES_KEY = 'bak_cosmetic_excludes_v1';
+const BAK_COSMETIC_SHARD_PREFIX = 'bak_cosmetic_shard_';
+const BAK_COSMETIC_SHARDS = 64;
+// DNR 写入结果 / 订阅刷新进度（诊断与 UI 展示用）
+const BAK_DNR_STATE_KEY = 'bak_dnr_state_v1';
+const BAK_REFRESH_STATE_KEY = 'bak_refresh_state_v1';
