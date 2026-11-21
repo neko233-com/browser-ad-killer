@@ -41,6 +41,14 @@ if (manifest) {
   ].filter(Boolean);
   for (const f of files) existsSync(join(root, f)) ? ok(`引用存在: ${f}`) : bad(`引用存在: ${f}`, '文件缺失');
 
+  // default_locale 必须有对应 _locales 目录，否则浏览器拒绝加载整个扩展
+  if (manifest.default_locale) {
+    const loc = `_locales/${manifest.default_locale}/messages.json`;
+    existsSync(join(root, loc)) ? ok(`default_locale 目录存在: ${loc}`) : bad('default_locale', `缺少 ${loc}（浏览器会拒绝加载扩展）`);
+  } else {
+    ok('未声明 default_locale（无需 _locales）');
+  }
+
   // 内容脚本匹配声明
   const cs = manifest.content_scripts || [];
   cs.length ? ok(`content_scripts 已声明 ${cs.length} 组`) : bad('content_scripts', '为空');
