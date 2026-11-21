@@ -107,6 +107,8 @@ schtasks /delete /tn "Browser Ad Killer Update" /f
 | AdGuard Chinese | 中文区规则（含元素隐藏，默认开） | filters.adtidy.org / ghproxy / GitHub raw |
 | EasyList China | 中文广告（默认开） | easylist-downloads.adblockplus.org / jsDelivr |
 | anti-AD 域名列表 | 中文区命中率最高的域名清单（默认开） | anti-ad.net / jsDelivr / GitHub |
+| URLhaus 恶意域名 | 恶意软件分发域名（默认开，对标 Browsing Security） | malware-filter.gitlab.io / jsDelivr |
+| Phishing 钓鱼域名 | 钓鱼站点域名（默认开，对标 Browsing Security） | malware-filter.gitlab.io / jsDelivr |
 | EasyPrivacy | 追踪/隐私（默认关） | easylist-downloads.adblockplus.org |
 | CJX's Annoyance | 自推广/骚扰（默认关） | GitHub / jsDelivr |
 
@@ -149,11 +151,14 @@ node tools\pack.mjs         # 打包 dist\browser-ad-killer-vX.Y.Z.zip
 | 网页广告 / 追踪拦截 | ✅ | DNR 动态规则，去重后约 12.7 万域名 |
 | 元素隐藏（横幅、广告位、热搜） | ✅ | 订阅 `##` 规则，约 6.8 万选择器 / 3.2 万站点 |
 | 搜索页推广净化 | ✅ | 五家引擎 + 百度热搜，AdGuard 需额外规则 |
-| 恶意 / 钓鱼网站拦截 | ⚠️ 部分 | 无专项钓鱼库，可自行订阅恶意域名列表 |
+| 恶意 / 钓鱼网站拦截 | ✅ | URLhaus + Phishing 列表，约 1.9 万恶意/钓鱼域名 |
+| 跟踪参数剥离 | ✅ | 导航时删除 utm_* / fbclid / gclid / msclkid 等 26 个纯跟踪参数 |
+| 反广告拦截遮罩清除 | ✅ | 命中「检测到广告拦截」文案才移除遮罩，并恢复被锁滚动 |
+| 整站屏蔽（黑名单） | ✅ | 连主文档一起拦，可作家长控制的简易替代 |
 | DNS 层保护（全系统 / 全应用） | ❌ | 扩展无法接管系统 DNS；如需请把系统或路由器 DNS 设为 AdGuard DNS |
 | HTTPS 内容层过滤（中间人） | ❌ | MV3 明确禁止，任何浏览器扩展都做不到 |
-| 反 adblock 对抗页面 | ⚠️ 有限 | 网络层与元素隐藏生效，脚本注入类对抗受限 |
-| 家长控制 / Stealth 隐私模式 | ❌ | 属桌面版专有能力 |
+| 页面脚本级对抗（scriptlet） | ❌ | MV3 禁止远程代码，仅能做静态 CSS / 定时 DOM 清理 |
+| 家长控制 / Stealth 隐私模式 | ⚠️ 部分 | 家长控制可用黑名单近似；Stealth 的多数项 MV3 无法实现 |
 | 非浏览器流量（APP 开屏等） | ❌ | 需 AdGuard 桌面版或系统级方案 |
 | 规则自动更新 | ✅ | 订阅 12 小时 + 计划任务无人值守更新本体 |
 

@@ -99,6 +99,8 @@ schtasks /delete /tn "Browser Ad Killer Update" /f
 | AdGuard Chinese | Chinese ads incl. element hiding (on) | filters.adtidy.org / ghproxy / GitHub raw |
 | EasyList China | Chinese ads (on) | easylist-downloads.adblockplus.org / jsDelivr |
 | anti-AD domain list | Highest-hit Chinese domains (on) | anti-ad.net / jsDelivr / GitHub |
+| URLhaus malicious domains | Malware distribution domains (on, Browsing-Security equivalent) | malware-filter.gitlab.io / jsDelivr |
+| Phishing domains | Phishing sites (on, Browsing-Security equivalent) | malware-filter.gitlab.io / jsDelivr |
 | EasyPrivacy | Tracking/privacy (off) | easylist-downloads.adblockplus.org |
 | CJX's Annoyance | Self-promotion/annoyances (off) | GitHub / jsDelivr |
 
@@ -139,11 +141,14 @@ node tools\pack.mjs         # pack dist\browser-ad-killer-vX.Y.Z.zip
 | Web ad/tracker blocking | ✅ | Dynamic DNR, ~127k unique domains after dedupe |
 | Element hiding (banners, ad slots, hot lists) | ✅ | Subscription `##` rules, ~68k selectors across 32k sites |
 | Search-page sponsor cleanup | ✅ | Five engines + Baidu hot list; AdGuard needs extra rules |
-| Malware/phishing protection | ⚠️ Partial | No dedicated phishing feed; subscribe to a malicious-domain list if needed |
+| Malware/phishing protection | ✅ | URLhaus + Phishing lists, ~19k malicious/phishing domains |
+| Tracking-parameter stripping | ✅ | Removes 26 pure-tracking params (utm_* / fbclid / gclid / msclkid…) on navigation |
+| Anti-adblock overlay defusing | ✅ | Only fires when the “adblock detected” wording matches; also restores locked scrolling |
+| Whole-site blocklist | ✅ | Blocks the main document too; usable as a lightweight parental control |
 | System-wide DNS filtering | ❌ | Extensions cannot own system DNS; set your OS/router DNS to AdGuard DNS instead |
 | HTTPS content filtering (MITM) | ❌ | Disallowed by MV3 for any extension |
-| Anti-adblock countermeasures | ⚠️ Limited | Network and cosmetic layers work; script-injection countermeasures are restricted |
-| Parental control / Stealth mode | ❌ | Desktop-app-only features |
+| Page-level scriptlets | ❌ | MV3 forbids remote code; only static CSS / scheduled DOM cleanup |
+| Parental control / Stealth mode | ⚠️ Partial | Parental control approximated by the blocklist; most Stealth items are impossible under MV3 |
 | Non-browser traffic (app splash ads) | ❌ | Needs AdGuard desktop or a system-level solution |
 | Auto-update of rules | ✅ | Subscriptions every 12 h + scheduled task for the extension body |
 

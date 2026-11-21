@@ -28,6 +28,7 @@ function mergeDefaults(base, stored) {
   out.subscriptions = { ...base.subscriptions, ...(stored.subscriptions || {}) };
   out.customFilters = Array.isArray(stored.customFilters) ? stored.customFilters : base.customFilters;
   out.whitelist = Array.isArray(stored.whitelist) ? stored.whitelist : base.whitelist;
+  out.blacklist = Array.isArray(stored.blacklist) ? stored.blacklist : base.blacklist;
   out.stats = { ...base.stats, ...(stored.stats || {}) };
   return out;
 }
@@ -77,6 +78,32 @@ async function applySettings(s) {
         }
       });
     }
+
+    // 整站黑名单：连主文档一起拦（广告域名列表不拦主文档，避免误伤站点入口）
+    // 优先级必须高于下面的“跟踪参数”redirect 规则（10），否则主文档会被 redirect 规则抢走
+    const black = (s.blacklist || []).map(normalizeDomain).filter(Boolean);
+    for (const batch of chunk(black, 30)) {
+      dynamicRules.push({
+        id: seq++,
+        priority: 20,
+        action: { type: 'block' },
+        condition: { requestDomains: batch, resourceTypes: ['main_frame', 'sub_frame'] }
+      });
+    }
+  }
+
+  // 跟踪参数剥离：主文档导航时删除 utm_* / fbclid 等参数。
+  // 参数不存在时 Chromium 判定 URL 无变化，不会触发跳转，因此对所有导航生效是安全的。
+  if (s.enabled && s.stripTracking) {
+    dynamicRules.push({
+      id: seq++,
+      priority: 10,
+      action: {
+        type: 'redirect',
+        redirect: { transform: { queryTransform: { removeParams: BAK_TRACKING_PARAMS } } }
+      },
+      condition: { resourceTypes: ['main_frame'] }
+    });
   }
 
   // 注意：updateDynamicRules 不支持 removeAllRules，必须先取出现有 id 再逐个删除，
@@ -308,7 +335,10 @@ function buildExport(s) {
       removeHotlist: s.removeHotlist,
       subscriptions: s.subscriptions,
       customFilters: s.customFilters,
-      whitelist: s.whitelist
+      whitelist: s.whitelist,
+      blacklist: s.blacklist,
+      stripTracking: s.stripTracking,
+      defuseAntiAdblock: s.defuseAntiAdblock
     }
   };
 }
@@ -325,7 +355,10 @@ function parseImport(config) {
     removeHotlist: !!st.removeHotlist,
     subscriptions: st.subscriptions || {},
     customFilters: Array.isArray(st.customFilters) ? st.customFilters : [],
-    whitelist: Array.isArray(st.whitelist) ? st.whitelist.map(normalizeDomain) : []
+    whitelist: Array.isArray(st.whitelist) ? st.whitelist.map(normalizeDomain) : [],
+    blacklist: Array.isArray(st.blacklist) ? st.blacklist.map(normalizeDomain).filter(Boolean) : [],
+    stripTracking: st.stripTracking !== false,
+    defuseAntiAdblock: st.defuseAntiAdblock !== false
   };
 }
 
@@ -393,6 +426,15 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         const set = new Set(s.whitelist);
         msg.paused ? set.add(domain) : set.delete(domain);
         sendResponse(await saveSettings({ whitelist: [...set] }));
+        break;
+      }
+      case 'SET_BLACKLIST': {
+        const s = await getSettings();
+        const domain = normalizeDomain(msg.domain);
+        if (!domain) { sendResponse({ ok: false, error: '无效域名' }); break; }
+        const set = new Set(s.blacklist || []);
+        msg.blocked ? set.add(domain) : set.delete(domain);
+        sendResponse({ ok: true, settings: await saveSettings({ blacklist: [...set] }) });
         break;
       }
       case 'REFRESH_SUBSCRIPTIONS':

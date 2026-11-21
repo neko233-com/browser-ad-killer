@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>🛡️ Browser Ad Killer <span class="ver">v0.1.0</span></h1>
+    <h1>🛡️ Browser Ad Killer <span class="ver" id="ver">v0.2.0</span></h1>
     <p class="lead">Edge / Chrome 原生支持，配置可导出并同步到夸克、QQ 等 Chromium 浏览器。</p>
 
     <!-- 总开关 -->
@@ -56,6 +56,25 @@
       </div>
     </section>
 
+    <!-- 隐私与对抗 -->
+    <section class="panel">
+      <h2>隐私与对抗</h2>
+      <div class="row">
+        <div class="row-main">
+          <div class="row-title">移除跟踪参数</div>
+          <div class="row-sub">导航时剥离 utm_* / fbclid / gclid / msclkid 等纯跟踪参数（不改其它参数）</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="optStrip"><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <div class="row-main">
+          <div class="row-title">反广告拦截对抗</div>
+          <div class="row-sub">站点弹出「检测到广告拦截，请关闭」的全屏遮罩时自动移除并恢复滚动</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="optDefuse"><span class="slider"></span></label>
+      </div>
+    </section>
+
     <!-- 规则订阅 -->
     <section class="panel">
       <div class="panel-head">
@@ -63,7 +82,7 @@
         <button class="btn small" id="refreshSubs">立即更新全部</button>
       </div>
       <div id="subList"></div>
-      <p class="hint">订阅每 12 小时自动刷新一次；v1 仅解析网络层规则（域名拦截），元素隐藏类规则在路线图中。</p>
+      <p class="hint">订阅每 12 小时自动刷新；域名规则进 DNR 网络层，<code>##</code> 元素隐藏规则生成页面 CSS。带路径的规则会被跳过而不是降级成整站拦截。</p>
     </section>
 
     <!-- 自定义规则 -->
@@ -85,6 +104,17 @@
         <button class="btn small" id="addWhitelist">添加</button>
       </div>
       <ul class="wl-list" id="wlList"></ul>
+    </section>
+
+    <!-- 黑名单 -->
+    <section class="panel">
+      <h2>整站屏蔽（黑名单）</h2>
+      <p class="hint">整个域名连同主文档一起拦下（含子域），适合彻底不想访问的站点；与白名单冲突时白名单优先。</p>
+      <div class="row">
+        <input type="text" id="blacklistInput" placeholder="输入域名，如 tracker-site.example">
+        <button class="btn small" id="addBlacklist">加入黑名单</button>
+      </div>
+      <ul class="wl-list" id="blList"></ul>
     </section>
 
     <!-- 配置同步 -->

@@ -15,10 +15,13 @@ async function saveMeta(meta) {
 
 async function refresh() {
   state = await send({ type: 'GET_STATE' });
+  if (typeof BAK_VERSION === 'string') $('ver').textContent = 'v' + BAK_VERSION;
   $('optMaster').checked = !!state.enabled;
   $('optNetwork').checked = !!state.networkBlocking;
   $('optSearch').checked = !!state.searchClean;
   $('optHotlist').checked = !!state.removeHotlist;
+  $('optStrip').checked = state.stripTracking !== false;
+  $('optDefuse').checked = state.defuseAntiAdblock !== false;
 
   document.querySelectorAll('#engineGrid input').forEach((el) => {
     el.checked = state[el.dataset.key] !== false;
@@ -26,6 +29,7 @@ async function refresh() {
 
   $('customFilters').value = (state.customFilters || []).join('\n');
   renderWhitelist();
+  renderBlacklist();
   renderSubs();
 }
 
@@ -38,6 +42,10 @@ $('optSearch').addEventListener('change', (e) =>
   send({ type: 'UPDATE_SETTINGS', patch: { searchClean: e.target.checked } }).then(refresh));
 $('optHotlist').addEventListener('change', (e) =>
   send({ type: 'UPDATE_SETTINGS', patch: { removeHotlist: e.target.checked } }).then(refresh));
+$('optStrip').addEventListener('change', (e) =>
+  send({ type: 'UPDATE_SETTINGS', patch: { stripTracking: e.target.checked } }).then(refresh));
+$('optDefuse').addEventListener('change', (e) =>
+  send({ type: 'UPDATE_SETTINGS', patch: { defuseAntiAdblock: e.target.checked } }).then(refresh));
 
 document.querySelectorAll('#engineGrid input').forEach((el) => {
   el.addEventListener('change', () => {
@@ -117,6 +125,31 @@ $('addWhitelist').addEventListener('click', async () => {
   if (!v) return;
   await send({ type: 'SET_WHITELIST', domain: v, paused: true });
   $('whitelistInput').value = '';
+  await refresh();
+});
+
+// ---------- 黑名单 ----------
+function renderBlacklist() {
+  const ul = $('blList');
+  ul.innerHTML = '';
+  (state.blacklist || []).forEach((d) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${escapeHtml(d)}</span><span class="rm">移除</span>`;
+    li.querySelector('.rm').addEventListener('click', async () => {
+      await send({ type: 'SET_BLACKLIST', domain: d, blocked: false });
+      await refresh();
+    });
+    ul.appendChild(li);
+  });
+  if (!state.blacklist?.length) ul.innerHTML = '<li><span class="hint">暂无屏蔽站点</span></li>';
+}
+
+$('addBlacklist').addEventListener('click', async () => {
+  const v = $('blacklistInput').value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  if (!v) return;
+  const res = await send({ type: 'SET_BLACKLIST', domain: v, blocked: true });
+  if (res && res.ok === false) { $('blacklistInput').value = v; return; }
+  $('blacklistInput').value = '';
   await refresh();
 });
 

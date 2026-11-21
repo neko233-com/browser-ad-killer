@@ -18,16 +18,21 @@ const BAK_DEFAULTS = {
   clean360: true,
   removeHotlist: true,           // 隐藏百度热搜板块（首页榜单 + 结果页右侧栏）
   cosmetic: true,               // 通用页面广告槽位/广告域名媒体隐藏（网络层之外的兜底）
+  stripTracking: true,          // 剥离 URL 跟踪参数（utm_* / fbclid / gclid …）
+  defuseAntiAdblock: true,      // 反广告拦截对抗：移除「检测到广告拦截」遮罩
   subscriptions: {               // 预设订阅开关，详见 BAK_PRESETS
     adguardbase: true,
     adguardcn: true,
     easylistcn: true,
     antidomains: true,
+    urlhaus: true,
+    phishing: true,
     easyprivacy: false,
     cjx: false
   },
   customFilters: [],             // 用户自定义网络规则（每行一条，支持 ||domain^ 与 hosts 格式）
   whitelist: [],                 // 暂停拦截的域名（如 example.com）
+  blacklist: [],                 // 整站屏蔽的域名（含主文档，如跟踪/赌博站点）
   stats: { blocked: 0, since: null }
 };
 
@@ -83,6 +88,28 @@ const BAK_PRESETS = [
     ]
   },
   {
+    id: 'urlhaus',
+    name: 'URLhaus 恶意软件域名（对标 Browsing Security）',
+    parser: 'plain',
+    homepage: 'https://urlhaus.abuse.ch/',
+    urls: [
+      'https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-domains.txt',
+      'https://cdn.jsdelivr.net/gh/malware-filter/malware-filter@main/urlhaus-filter-domains.txt',
+      'https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-online.txt'
+    ]
+  },
+  {
+    id: 'phishing',
+    name: 'Phishing 钓鱼域名（对标 Browsing Security）',
+    parser: 'plain',
+    homepage: 'https://phishing.malware-filter.org/',
+    urls: [
+      'https://malware-filter.gitlab.io/malware-filter/phishing-filter-domains.txt',
+      'https://cdn.jsdelivr.net/gh/malware-filter/malware-filter@main/phishing-filter-domains.txt',
+      'https://malware-filter.gitlab.io/malware-filter/phishing-filter.txt'
+    ]
+  },
+  {
     id: 'easyprivacy',
     name: 'EasyPrivacy（追踪/隐私）',
     parser: 'easylist',
@@ -128,3 +155,13 @@ const BAK_COSMETIC_SHARDS = 64;
 // DNR 写入结果 / 订阅刷新进度（诊断与 UI 展示用）
 const BAK_DNR_STATE_KEY = 'bak_dnr_state_v1';
 const BAK_REFRESH_STATE_KEY = 'bak_refresh_state_v1';
+
+// 导航时剥离的跟踪参数（对标 AdGuard「移除跟踪参数」）。
+// 只保留业界公认的纯跟踪参数，避免误伤业务参数（如 from / ref / source）。
+const BAK_TRACKING_PARAMS = [
+  'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id',
+  'utm_source_platform', 'utm_creative_format', 'utm_marketing_tactic',
+  'gclid', 'gclsrc', 'dclid', 'gbraid', 'wbraid',
+  'fbclid', 'msclkid', 'ttclid', 'twclid', 'yclid', 'igshid',
+  'mc_cid', 'mc_eid', 'vero_id', 'oly_anon_id', 'oly_enc_id', '_openstat'
+];

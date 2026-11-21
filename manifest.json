@@ -66,6 +66,12 @@
       "all_frames": false
     },
     {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/adblock-defuser.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
       "matches": [
         "*://*.baidu.com/*",
         "*://*.baiducontent.com/*"
