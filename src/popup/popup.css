@@ -1,0 +1,62 @@
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --text: #1f2329;
+  --sub: #8a9099;
+  --line: #e8eaed;
+  --accent: #2f6fed;
+  --accent-soft: #e8efff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  width: 320px;
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 14px;
+}
+.hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.logo { font-size: 26px; }
+.title { font-size: 15px; font-weight: 700; }
+.sub { font-size: 11px; color: var(--sub); }
+.hd > .switch { margin-left: auto; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.row + .row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.row-main { flex: 1; min-width: 0; }
+.row-title { font-size: 13px; font-weight: 600; }
+.row-sub { font-size: 11px; color: var(--sub); margin-top: 2px; word-break: break-all; }
+
+.switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0; cursor: pointer;
+  background: #cfd3d9; border-radius: 24px; transition: .2s;
+}
+.slider::before {
+  content: ""; position: absolute; height: 18px; width: 18px;
+  left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s;
+}
+.switch input:checked + .slider { background: var(--accent); }
+.switch input:checked + .slider::before { transform: translateX(18px); }
+.switch.small { width: 36px; height: 20px; }
+.switch.small .slider::before { height: 14px; width: 14px; }
+.switch.small input:checked + .slider::before { transform: translateX(16px); }
+
+.stats { text-align: center; }
+.big { font-size: 26px; font-weight: 800; color: var(--accent); margin: 6px 0 2px; }
+
+.ft { display: flex; gap: 8px; margin-top: 4px; }
+.btn {
+  flex: 1; padding: 9px 0; border: 0; border-radius: 8px;
+  background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.btn.ghost { background: var(--accent-soft); color: var(--accent); }
+.btn:hover { filter: brightness(1.05); }

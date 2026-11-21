@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Ad Killer · 设置</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1>🛡️ Browser Ad Killer <span class="ver">v0.1.0</span></h1>
+    <p class="lead">Edge / Chrome 原生支持，配置可导出并同步到夸克、QQ 等 Chromium 浏览器。</p>
+
+    <!-- 总开关 -->
+    <section class="panel">
+      <h2>总开关</h2>
+      <div class="row">
+        <div class="row-main">
+          <div class="row-title">启用 AdKiller</div>
+          <div class="row-sub">关闭后全部规则停用，不影响任何页面访问</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="optMaster"><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <div class="row-main">
+          <div class="row-title">网络层拦截（DNR）</div>
+          <div class="row-sub">阻断广告/追踪请求：内置规则集 + 已启用订阅 + 自定义规则</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="optNetwork"><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <div class="row-main">
+          <div class="row-title">搜索页推广净化</div>
+          <div class="row-sub">隐藏搜索引擎结果页里的付费推广结果（不碰自然结果）</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="optSearch"><span class="slider"></span></label>
+      </div>
+    </section>
+
+    <!-- 搜索引擎细分 -->
+    <section class="panel">
+      <h2>搜索引擎净化细分</h2>
+      <div class="grid" id="engineGrid">
+        <label class="chk"><input type="checkbox" data-key="cleanGoogle"> Google</label>
+        <label class="chk"><input type="checkbox" data-key="cleanBaidu"> 百度</label>
+        <label class="chk"><input type="checkbox" data-key="cleanBing"> Bing</label>
+        <label class="chk"><input type="checkbox" data-key="cleanSogou"> 搜狗</label>
+        <label class="chk"><input type="checkbox" data-key="clean360"> 360（so.com）</label>
+      </div>
+      <div class="row mt">
+        <div class="row-main">
+          <div class="row-title">清理百度右侧热搜模块</div>
+          <div class="row-sub">默认关闭，避免误杀页面其它右侧内容；需要可手动开</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="optHotlist"><span class="slider"></span></label>
+      </div>
+    </section>
+
+    <!-- 规则订阅 -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>规则订阅</h2>
+        <button class="btn small" id="refreshSubs">立即更新全部</button>
+      </div>
+      <div id="subList"></div>
+      <p class="hint">订阅每 12 小时自动刷新一次；v1 仅解析网络层规则（域名拦截），元素隐藏类规则在路线图中。</p>
+    </section>
+
+    <!-- 自定义规则 -->
+    <section class="panel">
+      <h2>自定义规则</h2>
+      <p class="hint">每行一条，支持 <code>||ads.example.com^</code>（EasyList 格式）与 <code>0.0.0.0 track.com</code>（hosts 格式）；<code>@@||example.com^</code> 为例外放行。</p>
+      <textarea id="customFilters" rows="5" placeholder="||my-ad-network.com^&#10;0.0.0.0 tracker.example.com"></textarea>
+      <div class="row mt">
+        <button class="btn" id="saveCustom">保存自定义规则</button>
+        <span class="hint" id="customStatus"></span>
+      </div>
+    </section>
+
+    <!-- 白名单 -->
+    <section class="panel">
+      <h2>白名单（暂停拦截的站点）</h2>
+      <div class="row">
+        <input type="text" id="whitelistInput" placeholder="输入域名，如 example.com">
+        <button class="btn small" id="addWhitelist">添加</button>
+      </div>
+      <ul class="wl-list" id="wlList"></ul>
+    </section>
+
+    <!-- 配置同步 -->
+    <section class="panel">
+      <h2>配置同步到其他浏览器</h2>
+      <p class="hint">在本机导出 JSON，到另一台浏览器（夸克 / QQ / Edge / Chrome）安装本扩展后导入，开关、订阅、自定义规则、白名单一次性带过去。</p>
+      <div class="ft-row">
+        <button class="btn" id="exportBtn">导出配置 JSON</button>
+        <button class="btn ghost" id="importBtn">导入配置 JSON</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <span class="hint" id="syncStatus"></span>
+    </section>
+
+    <footer class="foot">
+      <button class="btn ghost" id="resetBtn">恢复默认设置</button>
+    </footer>
+  </div>
+  <script src="../lib/defaults.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

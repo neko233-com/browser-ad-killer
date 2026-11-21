@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Ad Killer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="hd">
+    <div class="logo">🛡️</div>
+    <div>
+      <div class="title">Browser Ad Killer</div>
+      <div class="sub" id="engineLabel">浏览器广告杀手</div>
+    </div>
+    <label class="switch">
+      <input type="checkbox" id="masterToggle">
+      <span class="slider"></span>
+    </label>
+  </header>
+
+  <section class="card" id="siteCard">
+    <div class="row">
+      <div class="row-main">
+        <div class="row-title">暂停此站点</div>
+        <div class="row-sub" id="siteDomain">—</div>
+      </div>
+      <label class="switch small">
+        <input type="checkbox" id="sitePauseToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <div class="row-main">
+        <div class="row-title">网络层拦截</div>
+        <div class="row-sub">DNR 阻断广告/追踪请求（内置规则 + 订阅）</div>
+      </div>
+      <label class="switch small">
+        <input type="checkbox" id="networkToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="row">
+      <div class="row-main">
+        <div class="row-title">搜索页推广净化</div>
+        <div class="row-sub">Google / 百度 / Bing / 搜狗 / 360</div>
+      </div>
+      <label class="switch small">
+        <input type="checkbox" id="searchToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <section class="card stats">
+    <div class="row-title">本次会话已匹配规则</div>
+    <div class="big" id="blockedCount">—</div>
+    <div class="row-sub" id="statsHint">（网络层匹配计数，搜索页净化不计入）</div>
+  </section>
+
+  <footer class="ft">
+    <button id="openOptions" class="btn">设置</button>
+    <button id="exportBtn" class="btn ghost">导出配置</button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
