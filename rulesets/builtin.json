@@ -2,86 +2,97 @@
   {
     "id": 1,
     "priority": 1,
-    "action": {
-      "type": "block"
-    },
+    "action": { "type": "block" },
     "condition": {
       "requestDomains": [
-        "doubleclick.net",
-        "googlesyndication.com",
-        "googleadservices.com",
-        "google-analytics.com",
-        "ssl.google-analytics.com",
-        "analytics.google.com",
-        "adservice.google.com",
-        "adservice.google.de",
-        "pagead2.googlesyndication.com",
-        "eclick.baidu.com",
-        "hm.baidu.com",
-        "cbjs.baidu.com",
-        "hmjs.baidu.com",
-        "pos.baidu.com",
-        "cpro.baidu.com",
-        "nsclick.baidu.com",
-        "mtj.baidu.com",
-        "cnzz.com",
-        "s9.cnzz.com",
-        "umeng.com",
-        "sdk.umeng.com",
-        "mtj.umeng.com",
-        "ad.qq.com",
-        "gdt.qq.com",
-        "alimama.com",
-        "mmstat.com",
-        "taboola.com",
-        "outbrain.com",
-        "zergnet.com",
-        "revcontent.com",
-        "propellerads.com",
-        "adsterra.com",
-        "popads.net",
-        "mgid.com",
-        "plista.com",
-        "contentabc.com",
-        "ads.yahoo.com",
-        "advertising.com",
-        "adroll.com",
-        "criteo.com",
-        "scorecardresearch.com",
-        "quantserve.com",
-        "chartbeat.com",
-        "ad.kuaishou.com",
-        "cp.snssdk.com",
-        "ad.union.baidu.com",
-        "cpro.bj.baidubce.com",
-        "adsrvr.org",
-        "adform.net",
-        "rubiconproject.com",
-        "openx.net",
-        "pubmatic.com",
-        "casalemedia.com",
-        "ssp.yahoo.com",
-        "33across.com",
-        "mathtag.com",
-        "bidswitch.net",
-        "adtechus.com",
-        "moatads.com",
-        "z.moatads.com",
-        "bidgear.com",
-        "rtb-media.com",
-        "adnxs.com"
+        "doubleclick.net", "googlesyndication.com", "googleadservices.com",
+        "google-analytics.com", "ssl.google-analytics.com", "analytics.google.com",
+        "adservice.google.com", "adservice.google.de", "adservice.google.co.uk",
+        "pagead2.googlesyndication.com", "partner.googleadservices.com",
+        "googleads.g.doubleclick.net", "ad.doubleclick.net", "stats.g.doubleclick.net",
+        "fls.doubleclick.net", "tags.g.doubleclick.net", "m.doubleclick.net",
+        "cm.g.doubleclick.net", "www.googleadservices.com", "ad-creative.doubleclick.net",
+        "gads.pubmatic.com", "adsystem.google.com"
       ],
-      "resourceTypes": [
-        "script",
-        "image",
-        "sub_frame",
-        "xmlhttprequest",
-        "media",
-        "font",
-        "websocket",
-        "ping",
-        "other"
-      ]
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "media", "font", "websocket", "ping", "other"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": [
+        "eclick.baidu.com", "hm.baidu.com", "cbjs.baidu.com", "hmjs.baidu.com",
+        "pos.baidu.com", "cpro.baidu.com", "nsclick.baidu.com", "mtj.baidu.com",
+        "ad.union.baidu.com", "cpro.bj.baidubce.com", "mbd.baidu.com",
+        "moe.baidu.com", "fexclick.baidu.com", "als.baidu.com", "sp0.baidu.com",
+        "p4p.baidu.com", "alimama.com", "mmstat.com", "gm.mmstat.com",
+        "s1.mmstat.com", "s2.mmstat.com", "acs.mmstat.com", "atlas.alimama.com",
+        "ad.taobao.com", "ad.tmall.com", "ad.alibaba.com"
+      ],
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "media", "font", "websocket", "ping", "other"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": [
+        "ad.qq.com", "gdt.qq.com", "q.gdt.qq.com", "b.gdt.qq.com",
+        "c.gdt.qq.com", "d.gdt.qq.com", "e.gdt.qq.com", "f.gdt.qq.com",
+        "beacon.qq.com", "report.qq.com", "mt.qq.com", "pi.qq.com",
+        "data.qq.com", "click.qq.com", "ajs.qq.com", "btrace.qq.com",
+        "ad.kuaishou.com", "cp.snssdk.com", "ad.oceanengine.com",
+        "e.snssdk.com", "ad.bytedance.com", "sf.snssdk.com",
+        "ad.360.cn", "ad.sina.com.cn", "ads.sina.com.cn",
+        "ad.sohu.com", "ads.sohu.com", "ad.toutiao.com"
+      ],
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "media", "font", "websocket", "ping", "other"]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": [
+        "taboola.com", "outbrain.com", "zergnet.com", "revcontent.com",
+        "propellerads.com", "adsterra.com", "popads.net", "mgid.com",
+        "plista.com", "contentabc.com", "ads.yahoo.com", "advertising.com",
+        "adroll.com", "criteo.com", "scorecardresearch.com", "quantserve.com",
+        "chartbeat.com", "adsrvr.org", "adform.net", "rubiconproject.com",
+        "openx.net", "pubmatic.com", "casalemedia.com", "ssp.yahoo.com",
+        "33across.com", "mathtag.com", "bidswitch.net", "adtechus.com",
+        "moatads.com", "z.moatads.com", "bidgear.com", "rtb-media.com",
+        "adnxs.com", "xandr.com", "appnexus.com", "trafficjunky.com",
+        "juicyads.com", "exoclick.com", "plugrush.com", "hilltopads.net",
+        "adskeeper.com", "admaven.com", "popcash.net", "deepbluemedias.com",
+        "adcash.com", "clicksgear.com", "adsterra.net", "propellerclick.com"
+      ],
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "media", "font", "websocket", "ping", "other"]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": [
+        "cnzz.com", "s9.cnzz.com", "umeng.com", "sdk.umeng.com", "mtj.umeng.com",
+        "umengcloud.com", "api.umeng.com", "spm.baidu.com", "tongji.baidu.com",
+        "data.cnzz.com", "id.cnzz.com", "w.cnzz.com", "v.cnzz.com",
+        "pf.qq.com", "sj.qq.com", "st.qq.com", "googletagmanager.com",
+        "tags.tiqcdn.com", "cdn.segment.com", "api.segment.io", "mixpanel.com",
+        "api.mixpanel.com", "amplitude.com", "api.amplitude.com", "hotjar.com",
+        "static.hotjar.com", "clarity.ms", "c.clarity.ms", "px.ads.linkedin.com",
+        "analytics.twitter.com", "static.ads-twitter.com", "analytics.tiktok.com",
+        "bat.bing.com", "mc.yandex.ru", "fullstory.com", "fsdn.com",
+        "sarametrics.com", "sharethis.com", "w.sharethis.com", "addthis.com",
+        "s7.addthis.com", "pingdom.net", "rum-static.pingdom.net"
+      ],
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "media", "font", "websocket", "ping", "other"]
     }
   }
 ]

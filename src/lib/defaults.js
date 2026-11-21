@@ -2,7 +2,7 @@
  * 被 background(service-worker, importScripts) / popup / options 直接引用，请勿使用 ES module 语法。
  */
 
-const BAK_VERSION = '0.1.0';
+const BAK_VERSION = '0.1.1';
 const BAK_STORAGE_KEY = 'bak_settings_v1';
 
 // 默认设置：导出/导入、站点开关都围绕这份结构
@@ -17,6 +17,7 @@ const BAK_DEFAULTS = {
   cleanSogou: true,
   clean360: true,
   removeHotlist: true,           // 隐藏百度热搜板块（首页榜单 + 结果页右侧栏）
+  cosmetic: true,               // 通用页面广告槽位/广告域名媒体隐藏（网络层之外的兜底）
   subscriptions: {               // 预设订阅开关，详见 BAK_PRESETS
     easylistcn: true,
     antidomains: true,
