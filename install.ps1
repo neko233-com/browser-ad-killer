@@ -1,27 +1,32 @@
 <#
 .SYNOPSIS
-  Browser Ad Killer 一键安装（pwsh 7 / Windows PowerShell 5.1 通用）
+  Browser Ad Killer 安装（pwsh 7 / Windows PowerShell 5.1 通用，幂等可重复执行）
 .DESCRIPTION
-  把扩展运行时文件复制到稳定目录（默认 %LOCALAPPDATA%\browser-ad-killer\extension），
-  避免项目文件夹移动后扩展失联；随后打开已检测到浏览器的扩展管理页。
-  加 -Launch 时用 --load-extension 直接拉起浏览器（仅本次会话生效）。
+  把运行时文件复制到稳定安装目录（默认 %LOCALAPPDATA%\browser-ad-killer\extension）。
+  幂等：重复执行不会报错、不重复弹窗；仅首次安装自动打开扩展页，重跑静默刷新文件。
 .PARAMETER Browser
   Edge / Chrome / QQ / All（默认）/ None。
 .PARAMETER InstallDir
-  自定义安装目录，默认 %LOCALAPPDATA%\browser-ad-killer\extension。
+  自定义安装目录。
 .PARAMETER Launch
-  用 --load-extension 启动检测到的浏览器（不加则只打开扩展管理页）。
+  用 --load-extension 启动检测到的浏览器（仅本次会话生效）。
+.PARAMETER OpenPages
+  强制打开检测到浏览器的扩展管理页（默认仅首次安装打开）。
+.PARAMETER Quiet
+  不打印收尾提示。
 .EXAMPLE
   .\install.ps1
   .\install.ps1 -Browser Edge -Launch
-  .\install.ps1 -InstallDir D:\Tools\adk -Browser None
+  .\install.ps1 -Browser None
 #>
 [CmdletBinding()]
 param(
   [ValidateSet('Edge', 'Chrome', 'QQ', 'All', 'None')]
   [string]$Browser = 'All',
   [string]$InstallDir = '',
-  [switch]$Launch
+  [switch]$Launch,
+  [switch]$OpenPages,
+  [switch]$Quiet
 )
 
 $ErrorActionPreference = 'Stop'
@@ -36,7 +41,9 @@ if (-not (Test-Path -LiteralPath (Join-Path $root 'manifest.json'))) {
   exit 1
 }
 
-# ---------- 复制运行时文件到稳定目录 ----------
+$firstInstall = -not (Test-Path -LiteralPath (Join-Path $InstallDir 'manifest.json'))
+
+# ---------- 复制运行时文件到稳定目录（幂等：整体刷新覆盖） ----------
 $copyItems = @(
   'manifest.json',
   'rulesets\builtin.json',
@@ -62,10 +69,10 @@ foreach ($rel in $copyItems) {
     continue
   }
   $parent = Split-Path -LiteralPath $to
-  New-Item -ItemType Directory -Force -Path $parent | Out-Null
+  if ($parent) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
   Copy-Item -LiteralPath $from -Destination $to -Recurse -Force
 }
-Write-Host "[BAK] 文件已复制到: $InstallDir" -ForegroundColor Green
+if (-not $Quiet) { Write-Host "[BAK] 文件已复制到: $InstallDir" -ForegroundColor Green }
 
 # ---------- 浏览器探测 ----------
 function Find-BrowserExe {
@@ -105,25 +112,28 @@ if ($Browser -eq 'All' -or $Browser -eq 'None') { $targets = @('Edge', 'Chrome',
 else { $targets = @($Browser) }
 
 foreach ($b in $targets) {
-  $exe = Find-BrowserExe $b
   if ($Browser -eq 'None') { continue }
+  $exe = Find-BrowserExe $b
   if ($Launch -and $exe) {
-    Write-Host "[BAK] 以 --load-extension 启动 $b ..." -ForegroundColor Cyan
+    if (-not $Quiet) { Write-Host "[BAK] 以 --load-extension 启动 $b ..." -ForegroundColor Cyan }
     Start-Process -FilePath $exe -ArgumentList "--load-extension=`"$InstallDir`"", '--no-first-run'
-  } elseif ($exe) {
-    Write-Host "[BAK] 打开 $b 扩展管理页: $($extUrl[$b])" -ForegroundColor Cyan
-    Start-Process -FilePath $exe -ArgumentList $extUrl[$b]
-  } else {
-    Write-Host "[BAK] 未检测到 $b 安装，手动打开 $($extUrl[$b]) 即可" -ForegroundColor DarkYellow
+  } elseif ($OpenPages -or $firstInstall) {
+    if ($exe) {
+      if (-not $Quiet) { Write-Host "[BAK] 打开 $b 扩展管理页: $($extUrl[$b])" -ForegroundColor Cyan }
+      Start-Process -FilePath $exe -ArgumentList $extUrl[$b]
+    } else {
+      if (-not $Quiet) { Write-Host "[BAK] 未检测到 $b，手动打开 $($extUrl[$b]) 即可" -ForegroundColor DarkYellow }
+    }
   }
 }
 
-# ---------- 收尾提示 ----------
-Write-Host ''
-Write-Host '========== 安装目录 ==========' -ForegroundColor Green
-Write-Host $InstallDir
-Write-Host '========== 接下来 ==========' -ForegroundColor Green
-Write-Host '1. 在扩展管理页打开「开发者模式」'
-Write-Host '2. 点「加载已解压的扩展程序」，选择上面的安装目录（不要选压缩包/子文件夹）'
-Write-Host '3. 夸克需先在 设置→夸克实验室 开启「扩展支持」；QQ 浏览器拖 crx 失败时改用解压目录加载'
-Write-Host '提示：-Launch 仅本次会话加载；长期使用请按上面第 2 步在开发者模式加载一次。'
+if (-not $Quiet) {
+  Write-Host ''
+  Write-Host '========== 安装目录 ==========' -ForegroundColor Green
+  Write-Host $InstallDir
+  Write-Host '========== 接下来 ==========' -ForegroundColor Green
+  Write-Host '1. 在扩展管理页打开「开发者模式」'
+  Write-Host '2. 点「加载已解压的扩展程序」，选择上面的安装目录（不要选压缩包/子文件夹）'
+  Write-Host '3. 夸克需先在 设置→夸克实验室 开启「扩展支持」；QQ 浏览器拖 crx 失败时改用解压目录加载'
+  Write-Host '提示：-Launch 仅本次会话加载；长期使用请按上面第 2 步在开发者模式加载一次。'
+}

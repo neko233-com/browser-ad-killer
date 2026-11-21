@@ -8,6 +8,8 @@
     "test": "node tools/test-parser.mjs",
     "gen:builtin": "node tools/gen-builtin.mjs",
     "pack": "node tools/pack.mjs",
-    "install:win": "powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1"
+    "install:win": "powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1",
+    "update:win": "powershell -NoProfile -ExecutionPolicy Bypass -File update.ps1",
+    "verify": "node tools/verify.mjs"
   }
 }

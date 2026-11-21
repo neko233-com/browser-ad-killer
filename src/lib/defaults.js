@@ -41,6 +41,7 @@ const BAK_PRESETS = [
     urls: [
       'https://easylist-downloads.adblockplus.org/easylistchina.txt',
       'https://cdn.jsdelivr.net/gh/easylistchina/easylistchina@master/easylistchina.txt',
+      'https://ghproxy.net/https://raw.githubusercontent.com/easylistchina/easylistchina/master/easylistchina.txt',
       'https://raw.githubusercontent.com/easylistchina/easylistchina/master/easylistchina.txt'
     ]
   },
@@ -52,6 +53,7 @@ const BAK_PRESETS = [
     urls: [
       'https://anti-ad.net/domains.txt',
       'https://cdn.jsdelivr.net/gh/privacy-protection-tools/anti-AD@master/domains.txt',
+      'https://ghproxy.net/https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/domains.txt',
       'https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/domains.txt'
     ]
   },
@@ -63,6 +65,7 @@ const BAK_PRESETS = [
     urls: [
       'https://easylist-downloads.adblockplus.org/easyprivacy.txt',
       'https://cdn.jsdelivr.net/gh/easylist/easylist@master/easyprivacy.txt',
+      'https://ghproxy.net/https://raw.githubusercontent.com/easylist/easylist/master/easyprivacy.txt',
       'https://raw.githubusercontent.com/easylist/easylist/master/easyprivacy.txt'
     ]
   },
@@ -73,7 +76,8 @@ const BAK_PRESETS = [
     homepage: 'https://github.com/cjx82630/cjxlist',
     urls: [
       'https://raw.githubusercontent.com/cjx82630/cjxlist/master/cjx-annoyance.txt',
-      'https://cdn.jsdelivr.net/gh/cjx82630/cjxlist@master/cjx-annoyance.txt'
+      'https://cdn.jsdelivr.net/gh/cjx82630/cjxlist@master/cjx-annoyance.txt',
+      'https://ghproxy.net/https://raw.githubusercontent.com/cjx82630/cjxlist/master/cjx-annoyance.txt'
     ]
   }
 ];

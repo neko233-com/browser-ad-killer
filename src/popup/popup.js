@@ -23,6 +23,16 @@ async function refresh() {
 
   const stats = await send({ type: 'GET_STATS' });
   $('blockedCount').textContent = stats.blocked >= 0 ? String(stats.blocked) : '—';
+
+  // 新版本提示（镜像链检查结果）
+  const upd = await send({ type: 'GET_UPDATE_STATUS' });
+  const banner = $('updateBanner');
+  if (upd && upd.available) {
+    banner.hidden = false;
+    banner.innerHTML = `检测到新版本 <b>v${upd.latest}</b>，运行 <b>update.ps1</b>（或 update.sh）即可更新`;
+  } else {
+    banner.hidden = true;
+  }
 }
 
 function hostFromUrl(url) {

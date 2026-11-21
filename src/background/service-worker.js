@@ -7,8 +7,11 @@
  */
 importScripts('../lib/defaults.js');
 importScripts('../lib/filter-parser.js');
+importScripts('../lib/mirrors.js');
 
 const ALARM_REFRESH = 'bak-refresh-subscriptions';
+const ALARM_UPDATE = 'bak-update-check';
+const UPDATE_KEY = 'bak_update_v1';
 
 // ---------- 设置读写 ----------
 async function getSettings() {
@@ -184,6 +187,37 @@ async function getBlockedCount() {
   } catch { return -1; }
 }
 
+// ---------- 远程版本检查（镜像链逐个回退） ----------
+async function fetchRemoteManifest() {
+  let lastErr = null;
+  for (const url of BAK_REMOTE_MANIFEST_URLS) {
+    try {
+      const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('all mirrors failed');
+}
+
+async function checkRemoteUpdate(manual = false) {
+  try {
+    const remote = await fetchRemoteManifest();
+    const latest = remote.version || '0.0.0';
+    const available = compareVersions(latest, BAK_VERSION) > 0;
+    const meta = { available, latest, checkedAt: Date.now(), manual };
+    await chrome.storage.local.set({ [UPDATE_KEY]: meta });
+    return meta;
+  } catch (e) {
+    return { available: false, error: String(e.message || e) };
+  }
+}
+
+async function getUpdateStatus() {
+  const r = await chrome.storage.local.get(UPDATE_KEY);
+  return r[UPDATE_KEY] || { available: false };
+}
+
 // ---------- 消息路由 ----------
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   (async () => {
@@ -228,6 +262,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       case 'GET_STATS':
         sendResponse({ blocked: await getBlockedCount() });
         break;
+      case 'CHECK_UPDATE':
+        sendResponse(await checkRemoteUpdate(true));
+        break;
+      case 'GET_UPDATE_STATUS':
+        sendResponse(await getUpdateStatus());
+        break;
       default:
         sendResponse({ error: 'unknown message' });
     }
@@ -241,11 +281,14 @@ chrome.runtime.onInstalled.addListener(async () => {
   await chrome.storage.local.set({ [BAK_STORAGE_KEY]: s });
   await applySettings(s);
   chrome.alarms.create(ALARM_REFRESH, { periodInMinutes: 60 * 12 }); // 12 小时刷新订阅
+  chrome.alarms.create(ALARM_UPDATE, { periodInMinutes: 60 * 6 });    // 6 小时检查新版本
   refreshSubscriptions(false);
+  checkRemoteUpdate(false);
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === ALARM_REFRESH) refreshSubscriptions(false);
+  if (alarm.name === ALARM_UPDATE) checkRemoteUpdate(false);
 });
 
 // 浏览器启动时重放一次规则（SW 会休眠，动态规则持久化，但静态集状态需复核）

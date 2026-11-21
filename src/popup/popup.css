@@ -53,6 +53,13 @@ body {
 .stats { text-align: center; }
 .big { font-size: 26px; font-weight: 800; color: var(--accent); margin: 6px 0 2px; }
 
+.update-banner {
+  background: #fff4e5; color: #b25e09; border: 1px solid #ffd9a8;
+  border-radius: 8px; padding: 8px 10px; font-size: 12px; margin-bottom: 10px;
+  line-height: 1.5;
+}
+.update-banner b { color: #b25e09; }
+
 .ft { display: flex; gap: 8px; margin-top: 4px; }
 .btn {
   flex: 1; padding: 9px 0; border: 0; border-radius: 8px;

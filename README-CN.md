@@ -60,6 +60,13 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 | **QQ 浏览器** | `qqbrowser://extensions` → 开发者模式；拖 .crx 失败时改用解压目录加载 |
 | 其它 Chromium（搜狗、360 极速等） | 同样解压加载；内核过旧可能对 MV3/DNR 支持不全，功能降级 |
 
+## 自动更新与镜像
+
+- **扩展内检测**：后台每 6 小时经镜像链检查 GitHub 远程版本，有新版时弹窗提示（已是最新不打扰）。
+- **命令更新**：`update.ps1`（Windows）/ `update.sh`（类 Unix）走「GitHub 直连 → jsDelivr → ghproxy → ghfast」镜像链逐个回退拉取整仓，仅当远程版本更高才刷新安装目录；已是最新直接 no-op，全部镜像不可达时仅告警、不破坏现有安装。
+- **订阅刷新**：规则订阅每 12 小时自动更新，预设源同样带镜像回退。
+- **幂等**：`install` / `update` 均可重复执行，重跑不报错、不重复弹窗、不残留临时文件。
+
 ## 使用说明
 
 | 位置 | 功能 |
@@ -92,10 +99,11 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 ## 开发
 
 ```powershell
-node tools\validate.mjs      # JSON + JS 语法校验
-node tools\test-parser.mjs   # 过滤器解析器单测（10 例）
-node tools\gen-builtin.mjs   # 重新生成内置规则集
-node tools\pack.mjs          # 打包 dist\browser-ad-killer-vX.Y.Z.zip
+node tools\verify.mjs       # 全量验证（manifest/规则集 schema/引用/语法/单测，40 项）
+node tools\validate.mjs     # JSON + JS 语法校验
+node tools\test-parser.mjs  # 过滤器解析器单测（10 例）
+node tools\gen-builtin.mjs  # 重新生成内置规则集
+node tools\pack.mjs         # 打包 dist\browser-ad-killer-vX.Y.Z.zip
 ```
 
 ## 路线图

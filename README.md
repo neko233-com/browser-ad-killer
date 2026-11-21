@@ -53,6 +53,13 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 | **QQ Browser** | `qqbrowser://extensions`, Developer mode; prefer unpacked folder loading if dragging `.crx` fails |
 | Other Chromium (Sogou, 360 Speed, …) | Same unpacked flow; older kernels may lack full MV3/DNR support and degrade gracefully |
 
+## Auto-update & mirrors
+
+- **In-extension check**: the background checks the GitHub remote version every 6 h through a mirror chain; the popup shows a notice only when a newer version exists (no noise when up-to-date).
+- **CLI update**: `update.ps1` (Windows) / `update.sh` (Unix) fetch the repo through the chain `GitHub direct → jsDelivr → ghproxy → ghfast`; they refresh the install dir only when the remote version is higher; up-to-date = no-op; if every mirror fails it just warns without touching the current install.
+- **Subscription refresh**: filter lists auto-update every 12 h; presets also carry mirror fallback.
+- **Idempotent**: `install` / `update` are safe to rerun — no errors, no duplicate popups, no temp leftovers.
+
 ## Usage
 
 | Place | What it does |
@@ -85,10 +92,11 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 ## Development
 
 ```powershell
-node tools\validate.mjs      # JSON + JS syntax check
-node tools\test-parser.mjs   # filter parser unit tests (10 cases)
-node tools\gen-builtin.mjs   # regenerate builtin ruleset
-node tools\pack.mjs          # pack dist\browser-ad-killer-vX.Y.Z.zip
+node tools\verify.mjs       # full verification (manifest/ruleset schema/refs/syntax/unit tests, 40 checks)
+node tools\validate.mjs     # JSON + JS syntax check
+node tools\test-parser.mjs  # filter parser unit tests (10 cases)
+node tools\gen-builtin.mjs  # regenerate builtin ruleset
+node tools\pack.mjs         # pack dist\browser-ad-killer-vX.Y.Z.zip
 ```
 
 ## Roadmap
