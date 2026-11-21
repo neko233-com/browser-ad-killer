@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser Ad Killer — Privacy Policy / 隐私政策</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font: 16px/1.7 -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+         background: #0f141c; color: #e6ebf2; }
+  main { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px; }
+  h1 { font-size: 26px; margin: 0 0 8px; letter-spacing: .2px; }
+  .meta { color: #8fa0b5; font-size: 14px; margin-bottom: 40px; }
+  h2 { font-size: 19px; margin: 36px 0 10px; color: #cfe0ff; }
+  p, li { color: #c7d3e2; }
+  ul { padding-left: 22px; }
+  code { background: #1b2431; padding: 1px 6px; border-radius: 5px; font-size: 13px; color: #a9c6ff; }
+  .divider { height: 1px; background: #1e2836; margin: 48px 0; }
+  a { color: #7fb0ff; }
+  footer { color: #7b8a9d; font-size: 13px; margin-top: 48px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Browser Ad Killer 隐私政策</h1>
+  <div class="meta">适用于 Microsoft Edge 扩展「Browser Ad Killer」· 版本 0.2.0 · 最后更新：2026-11-22</div>
+
+  <h2>一句话总结</h2>
+  <p>这个扩展不收集、不上传、不共享你的任何个人数据。所有处理都在你的设备上完成。</p>
+
+  <h2>扩展会接触哪些数据</h2>
+  <ul>
+    <li><strong>网页地址（URL）</strong>：用于匹配域名级的拦截规则与元素隐藏规则。URL 只在本地内存与扩展存储中短暂存在，不会发送到任何服务器。</li>
+    <li><strong>页面元素</strong>：内容脚本只删除广告位/推广卡片对应的 DOM 节点，不读取表单内容、密码、输入历史或页面文本。</li>
+    <li><strong>拦截计数</strong>：本地累计的拦截数量与命中规则，仅存于扩展本地存储，用于弹窗与状态展示。</li>
+    <li><strong>设置</strong>：开关、自定义规则、订阅列表，存于扩展本地存储（<code>chrome.storage.local</code>）。</li>
+  </ul>
+
+  <h2>会发起哪些网络请求</h2>
+  <ul>
+    <li>通过 HTTPS 拉取<strong>公开的广告拦截订阅</strong>（AdGuard Base / AdGuard Chinese / EasyList China / anti-AD 等），用于更新规则。请求只包含固定的订阅 URL 与通用 User-Agent，不携带设备标识或用户标识。</li>
+    <li>通过 HTTPS 检查扩展自身的新版本（GitHub / jsDelivr 镜像）。请求同样不含个人信息。</li>
+    <li>除此之外，扩展<strong>不会</strong>连接任何统计、分析、广告或崩溃上报服务。</li>
+  </ul>
+
+  <h2>不会做的事</h2>
+  <ul>
+    <li>不要求登录，不申请账号。</li>
+    <li>不读取或上传浏览历史、书签、Cookie、密码。</li>
+    <li>不注入远程代码；扩展的全部脚本随安装包分发。</li>
+    <li>不向第三方出售、出租或共享任何数据。</li>
+  </ul>
+
+  <h2>权限用途</h2>
+  <ul>
+    <li><code>declarativeNetRequest</code>：按规则拦截广告与追踪请求。</li>
+    <li><code>&lt;all_urls&gt;</code>：广告域名出现在任意站点，拦截需全站生效。</li>
+    <li><code>scripting</code>：向已打开页面注入元素隐藏样式。</li>
+    <li><code>storage</code> / <code>unlimitedStorage</code>：保存规则表与设置（规则表可达数十万域名）。</li>
+    <li><code>tabs</code> / <code>activeTab</code> / <code>alarms</code>：判断当前页面类型、做一次性诊断、定时刷新订阅。</li>
+  </ul>
+
+  <h2>数据删除</h2>
+  <p>卸载扩展即删除其全部本地数据。你也可在扩展选项页点击「恢复默认」清空自定义规则与统计。</p>
+
+  <h2>联系方式</h2>
+  <p>问题或数据相关请求：<a href="https://github.com/neko233-com/browser-ad-killer/issues">GitHub Issues</a>。</p>
+
+  <div class="divider"></div>
+
+  <h1>Privacy Policy (English)</h1>
+  <div class="meta">For the Microsoft Edge extension “Browser Ad Killer” · version 0.2.0 · last updated 2026-11-22</div>
+
+  <h2>Summary</h2>
+  <p>The extension collects nothing, transmits nothing about you, and shares nothing. All processing happens on your device.</p>
+
+  <h2>What it touches</h2>
+  <ul>
+    <li><strong>Page URLs</strong> — matched locally against domain-level block and cosmetic rules. Never sent to any server.</li>
+    <li><strong>Page elements</strong> — content scripts remove ad DOM nodes only. They never read form fields, passwords, or page text.</li>
+    <li><strong>Block counters</strong> — stored locally for the popup display.</li>
+    <li><strong>Settings</strong> — stored in <code>chrome.storage.local</code>.</li>
+  </ul>
+
+  <h2>Network requests it makes</h2>
+  <ul>
+    <li>HTTPS fetches of <strong>public blocklists</strong> (AdGuard Base / Chinese, EasyList China, anti-AD) to refresh rules. Requests contain only the subscription URL and a generic User-Agent.</li>
+    <li>HTTPS update checks against GitHub / jsDelivr mirrors, containing no personal data.</li>
+    <li>No analytics, no telemetry, no crash reporting, no ad services.</li>
+  </ul>
+
+  <h2>What it never does</h2>
+  <ul>
+    <li>No sign-in, no account.</li>
+    <li>No reading or uploading of history, bookmarks, cookies or passwords.</li>
+    <li>No remote code; all scripts ship inside the package.</li>
+    <li>No sale, rental or sharing of data with third parties.</li>
+  </ul>
+
+  <h2>Data removal</h2>
+  <p>Uninstalling the extension deletes all of its local data. The options page also offers “reset to defaults”.</p>
+
+  <h2>Contact</h2>
+  <p><a href="https://github.com/neko233-com/browser-ad-killer/issues">GitHub Issues</a>.</p>
+
+  <footer>Browser Ad Killer · MIT License · https://github.com/neko233-com/browser-ad-killer</footer>
+</main>
+</body>
+</html>
