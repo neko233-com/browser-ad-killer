@@ -49,6 +49,7 @@ copy_items=(
   src/options
   src/lib/defaults.js
   src/lib/filter-parser.js
+  src/lib/mirrors.js
 )
 
 rm -rf "$INSTALL_DIR"

@@ -53,7 +53,8 @@ $copyItems = @(
   'src\popup',
   'src\options',
   'src\lib\defaults.js',
-  'src\lib\filter-parser.js'
+  'src\lib\filter-parser.js',
+  'src\lib\mirrors.js'
 )
 
 if (Test-Path -LiteralPath $InstallDir) {
