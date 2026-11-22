@@ -61,11 +61,11 @@ $copyItems = @(
   'src\lib\mirrors.js'
 )
 
-if (Test-Path -LiteralPath $InstallDir) {
-  Remove-Item -LiteralPath $InstallDir -Recurse -Force
+if (-not (Test-Path -LiteralPath $InstallDir)) {
+  New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 }
-New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 
+# 原地覆盖而非删除重建：浏览器已加载该目录时不会被判定为目录被替换而失效
 foreach ($rel in $copyItems) {
   $from = Join-Path $root $rel
   $to = Join-Path $InstallDir $rel
