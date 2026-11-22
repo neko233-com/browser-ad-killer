@@ -6,7 +6,7 @@
 
 | 用途 | 文件 |
 |---|---|
-| 扩展包 | `dist/browser-ad-killer-v0.2.0.zip` |
+| 扩展包 | `dist/browser-ad-killer-v0.2.1.zip` |
 | 商店 logo（Edge 300×300；Chrome 用 manifest 内 128 图标） | `store/logo-300.png` |
 | 截图 1280×800（≥1 张即可） | `store/screenshot-1-serp.png`、`store/screenshot-2-home.png` |
 | 小促销图 440×280（可选） | `store/small-tile-440x280.png` |
@@ -18,7 +18,7 @@
 
 1. 打开 https://partner.microsoft.com/dashboard/microsoftedge/overview ，用微软账号登录。
 2. 首次需注册 Edge 开发者计划（免费，填发布者名称）。
-3. 「新建提交 / New submission」→ 上传 `browser-ad-killer-v0.2.0.zip`。
+3. 「新建提交 / New submission」→ 上传 `browser-ad-killer-v0.2.1.zip`。
 4. 填表（值见 `store/listing.md`）：名称 `Browser Ad Killer`、类别 Productivity、语言 English + 中文、简介、详细描述、单用途、逐条权限理由。
 5. 上传 `logo-300.png`、两张 1280×800 截图、`small-tile-440x280.png`。
 6. 隐私政策 URL 填上面的 Pages 地址；支持链接填 Issues；「Notes for certification」粘贴 `listing.md` 第 5 节。

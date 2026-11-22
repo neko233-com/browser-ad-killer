@@ -1,6 +1,6 @@
 {
   "name": "browser-ad-killer",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Edge/Chrome MV3 广告拦截扩展：DNR 网络层拦截 + 搜索页推广净化，配置可同步到夸克/QQ 等 Chromium 浏览器",
   "private": true,
   "scripts": {

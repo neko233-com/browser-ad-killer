@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Browser Ad Killer",
   "short_name": "AdKiller",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Lightweight ad blocker: network-layer blocking + search-result cleanup on Google, Baidu, Bing, Sogou. No account, no telemetry.",
   "minimum_chrome_version": "100",
   "icons": {
