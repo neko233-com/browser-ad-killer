@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Browser Ad Killer · 浏览器广告杀手",
+  "name": "Browser Ad Killer",
   "short_name": "AdKiller",
   "version": "0.2.0",
-  "description": "面向 Edge / Chrome 的轻量广告拦截：网络层 DNR 拦截 + 搜索引擎（Google/百度/Bing/搜狗/360）推广结果净化，配置可导出同步到夸克、QQ 等 Chromium 浏览器。",
+  "description": "Lightweight ad blocker: network-layer blocking + search-result cleanup on Google, Baidu, Bing, Sogou. No account, no telemetry.",
   "minimum_chrome_version": "100",
   "icons": {
     "16": "icons/16.png",
@@ -100,3 +100,4 @@
     }
   ]
 }
+
